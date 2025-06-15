@@ -86,7 +86,7 @@ if __name__ == "__main__":
     # Path dataset dan nama kolom target
     raw_data_path = "../heart_raw.csv"
     target_column = "target"
-    output_directory = "./preprocessing"
+    output_directory = "./heart_preprocessing"
     
     # Run preprocessing
     X_train, X_test, y_train, y_test = preprocessor.preprocess_data(
