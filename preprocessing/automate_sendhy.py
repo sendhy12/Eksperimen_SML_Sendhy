@@ -32,10 +32,11 @@ class DataPreprocessor:
                 self.label_encoders[col] = le
         return df_encoded
     
-    def scale_numerical(self, df):
-        """Scale only numerical features"""
+    def scale_numerical(self, df, target_column):
+        """Scale only numerical features excluding target"""
         df_scaled = df.copy()
-        numeric_cols = df.select_dtypes(include=[np.number]).columns
+        numeric_cols = df_scaled.select_dtypes(include=[np.number]).columns
+        numeric_cols = numeric_cols.drop(target_column)  # exclude target
         df_scaled[numeric_cols] = self.scaler.fit_transform(df_scaled[numeric_cols])
         return df_scaled
 
@@ -51,11 +52,11 @@ class DataPreprocessor:
         df = self.encode_categorical(df, target_column)
         
         print("Scaling numerical features...")
-        df = self.scale_numerical(df)
+        df = self.scale_numerical(df, target_column)
         
         print("Splitting data...")
         X = df.drop(target_column, axis=1)
-        y = df[target_column]
+        y = df[target_column].astype(int)  # ensure target is integer
         X_train, X_test, y_train, y_test = train_test_split(
             X, y, test_size=test_size, random_state=42
         )
